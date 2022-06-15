@@ -1,0 +1,51 @@
+from numpy.ma.core import correlate
+from google.colab import files 
+dataToUpload = files.upload()
+
+import pandas as pd
+import statistics
+import plotly.graph_objects as go 
+import plotly.figure_factory as ff
+import plotly.express as px
+import random 
+import numpy as umom
+import csv 
+import seaborn as sns 
+
+df = pd.read_csv("main.csv")
+GRE_Score = df["GRE Score"].tolist()
+Chences_lmao = df["Chance of Admit "].tolist()
+Toflscore = df["TOEFL Score"].tolist()
+
+
+fig = px.scatter(x = Toflscore, y = Chences_lmao)
+fig.show()
+
+#m = 0.30 
+#c = -0.50 
+GRE_Score = umom.array(GRE_Score)
+Chences_lmao = umom.array(Chences_lmao)
+Toflscore = umom.array(Toflscore)
+m,c = umom.polyfit(Toflscore,Chences_lmao,1)
+
+y = []
+for x in Toflscore:
+  yvalue = m*x+c 
+  y.append(yvalue)
+
+
+fig = px.scatter(x=Toflscore, y=Chences_lmao)
+fig.update_layout(shapes = [
+                            dict(
+                                type = "line", 
+                                 y0 = min(y),y1=max(y),
+                                 x0 = min(Toflscore),x1 = max(Toflscore) 
+                            )
+])
+print(m)
+print(c)
+fig.show()
+x= 469
+y = m*x+c
+
+print(f"chance of the person with score {x} is {y}")
